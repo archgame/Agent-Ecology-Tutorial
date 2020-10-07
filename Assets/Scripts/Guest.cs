@@ -8,7 +8,7 @@ public class Guest : MonoBehaviour
     public enum Action { BATHING, WALKING, FOLLOWING }
 
     //public global variables
-    public GameObject Destination; //where the agent is going
+    public Destination Destination; //where the agent is going
 
     public float BathTime = 2.0f; //how long the agent stays in
     public Action Status; //our agent's current status
@@ -39,7 +39,7 @@ public class Guest : MonoBehaviour
                 Status = Action.WALKING;
 
                 GameObject entrance = GameObject.Find("Entrance");
-                Destination = entrance;
+                Destination = entrance.GetComponent<Destination>();
                 UpdateDestination();
             }
         }
