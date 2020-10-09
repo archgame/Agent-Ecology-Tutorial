@@ -37,20 +37,39 @@ public class Guest : MonoBehaviour
             if (_bathTime > BathTime)
             {
                 Status = Action.WALKING;
+                _bathTime = 0; //++++
+                Destination.RemoveGuest(this); //++++
 
                 GameObject entrance = GameObject.Find("Entrance");
                 Destination = entrance.GetComponent<Destination>();
                 UpdateDestination();
             }
+            //++++
+            return; //so it doesn't run any code below
         }
 
         //guard statement
         if (Destination == null) return; //return stops the update here until next frame
+        DestinationDistance(); //++++
+    }
 
+    private void DestinationDistance()
+    {
         //test agent distance from destination
         if (Vector3.Distance(transform.position, Destination.transform.position) < 1.1f)
         {
-            StartBath();
+            if (Destination.tag == "Bath")
+            {
+                StartBath();
+                return;
+            }
+            else if (Destination.tag == "Entrance")
+            {
+                Destination.gameObject.GetComponent<GuestManager>().GuestExit(this);
+                //GuestManager manager = Destination.gameObject.GetComponent<GuestManager>();
+                //manager.GuestExit(this);
+                return;
+            }
         }
     }
 
@@ -70,6 +89,5 @@ public class Guest : MonoBehaviour
     {
         Status = Action.BATHING;
         _agent.isStopped = true;
-        Destination = null;
     }
 }
