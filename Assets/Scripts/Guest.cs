@@ -29,7 +29,7 @@ public class Guest : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    public void GuestUpdate()
     {
         if (Status == Action.BATHING)
         {
