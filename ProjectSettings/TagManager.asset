@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bath
   - Entrance
+  - Conveyance
   layers:
   - Default
   - TransparentFX
