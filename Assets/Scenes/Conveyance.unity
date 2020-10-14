@@ -507,11 +507,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2affcee11e6d3049a2cac6725552778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path:
-  - {fileID: 397755479}
-  - {fileID: 2094632852}
+  Path: []
   Weight: 3
-  Speed: 8
+  Speed: 4
 --- !u!1 &634232168
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +546,7 @@ MonoBehaviour:
   - {fileID: 1831919570}
   - {fileID: 910242964}
   Weight: 3
-  Speed: 8
+  Speed: 4
 --- !u!65 &634232170
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1272,7 +1270,7 @@ MonoBehaviour:
   - {fileID: 2045786682}
   - {fileID: 666990115}
   Weight: 3
-  Speed: 8
+  Speed: 4
 --- !u!65 &1316399996
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1823,7 +1821,7 @@ MonoBehaviour:
   - {fileID: 173707497}
   - {fileID: 1184933392}
   Weight: 3
-  Speed: 8
+  Speed: 4
 --- !u!65 &1706186451
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2231,7 +2229,7 @@ MonoBehaviour:
   - {fileID: 891437580}
   - {fileID: 1498159013}
   Weight: 3
-  Speed: 8
+  Speed: 4
 --- !u!65 &1869354422
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2384,11 +2382,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2affcee11e6d3049a2cac6725552778, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path:
-  - {fileID: 1910395397}
-  - {fileID: 240524593}
+  Path: []
   Weight: 3
-  Speed: 8
+  Speed: 4
 --- !u!65 &1920913691
 BoxCollider:
   m_ObjectHideFlags: 0
