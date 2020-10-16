@@ -107,34 +107,47 @@ public class Guest : MonoBehaviour
         FindPath(); //this allows multiple conveyances
     }
 
-    public void FindPath()
+    public float AgentWalkDistance(Vector3 start, Vector3 end, Color color)
     {
-        NavMeshPath navMeshPath = _agent.path;
-        if (!_agent.CalculatePath(Destination.transform.position, navMeshPath)) return;
+        //move agent to the start position
+        Vector3 initialPosition = transform.position;
+        _agent.Move(start - initialPosition);
 
+        //test to see if agent has path or not
+        float distance = Mathf.Infinity;
+        NavMeshPath navMeshPath = _agent.path;
+        if (!_agent.CalculatePath(end, navMeshPath)) { _agent.Move(initialPosition - start); return distance; }
         Vector3[] path = navMeshPath.corners;
-        if (path.Length < 2) return;
+        if (path.Length < 2) { _agent.Move(initialPosition - start); return distance; }
 
         //get walking path distance
-        float distance = 0;
+        distance = 0;
         for (int i = 1; i < path.Length; i++)
         {
             distance += Vector3.Distance(path[i - 1], path[i]);
-            Debug.DrawLine(path[i - 1], path[i], Color.red);
+            Debug.DrawLine(path[i - 1], path[i], color); //visualizing the path, not necessary to return
         }
+
+        _agent.Move(initialPosition - start);
+        return distance;
+    }
+
+    public void FindPath()
+    {
+        //get walking path distance
+        Vector3 guestPosition = transform.position;
+        Vector3 destinationPosition = Destination.transform.position;
+        float distance = AgentWalkDistance(guestPosition, destinationPosition, Color.magenta);
         Debug.Break();
-        //code below break still runs
 
         //test all conveyances
         _currentConveyance = null;
-        Vector3 guestPosition = transform.position;
-        Vector3 destinationPosition = Destination.transform.position;
         Conveyance[] conveyances = GameObject.FindObjectsOfType<Conveyance>();
         foreach (Conveyance c in conveyances)
         {
-            float distToC = Vector3.Distance(guestPosition, c.StartPosition());
+            float distToC = AgentWalkDistance(guestPosition, c.StartPosition(), Color.green);
             float distC = c.WeightedTravelDistance();
-            float distFromC = Vector3.Distance(c.EndPosition(), destinationPosition);
+            float distFromC = AgentWalkDistance(c.EndPosition(), destinationPosition, Color.red);
 
             Debug.DrawLine(guestPosition, c.StartPosition(), Color.cyan);
             Debug.DrawLine(c.StartPosition(), c.EndPosition(), Color.cyan);

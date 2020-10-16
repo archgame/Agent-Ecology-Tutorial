@@ -18,7 +18,7 @@ public class Conveyance : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void ConveyanceUpdate(Guest guest)
+    public virtual void ConveyanceUpdate(Guest guest)
     {
         if (!_guests.ContainsKey(guest)) //add guest to dictionary
         {
