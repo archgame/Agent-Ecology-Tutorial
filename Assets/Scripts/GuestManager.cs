@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class GuestManager : MonoBehaviour
 {
-    public GameObject GuestPrefab; //guest gameobject to be instantiated
+    [HideInInspector]
+    public static GuestManager Instance { get; private set; } //for singleton
+
+    public GameObject GuestPrefab; //{get;set;}guest gameobject to be instantiated
 
     public float EntranceRate = 0.5f; //the rate at which guests will enter
 
@@ -14,6 +17,19 @@ public class GuestManager : MonoBehaviour
 
     private float _lastEntrance = 0; //time since last entrant
     private int _occupancyLimit = 0; //occupancy limit maximum
+
+    private void Awake()
+    {
+        //Singleton Pattern
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     private void Start()
@@ -35,23 +51,34 @@ public class GuestManager : MonoBehaviour
         //if (_occupancyLimit <= _guest.Count) return;
         if (_guest.Count >= _occupancyLimit) return;
 
+        //instantiate guest
+        GameObject guest = Instantiate(GuestPrefab, transform.position, Quaternion.identity); //adding our gameobject to scene
+        _guest.Add(guest.GetComponent<Guest>()); //adding our gameobject guest script to the guest list
+        Guest guestScript = guest.GetComponent<Guest>();
+        AssignOpenBath(guestScript);
+    }
+
+    public void AssignOpenBath(Guest guest, List<Destination> visited = null)
+    {
         foreach (Destination bath in _destinations)
         {
             //if bath is full guard statement
             if (bath.IsFull()) continue; //continue goes to the next line
 
-            //add guest to path
-            GameObject guest = Instantiate(GuestPrefab, transform.position, Quaternion.identity); //adding our gameobject to scene
-            _guest.Add(guest.GetComponent<Guest>()); //adding our gameobject guest script to the guest list
-            Guest guestScript = guest.GetComponent<Guest>();
-            guestScript.Destination = bath;
-            bath.AddGuest(guestScript);
-            //guest.GetComponent<Guest>().Destination = bath; //setting the player destination
-            //bath.AddGuest(guest.GetComponent<Guest>()); //adding guest to the bath so it is occupied
+            //make sure bath hasn't already been visited
+            if (visited != null)
+            {
+                if (visited.Contains(bath))
+                {
+                    continue;
+                }
+            }
 
+            //assign destination;
+            guest.Destination = bath;
+            bath.AddGuest(guest);
             break;
         }
-        //break goes to this line
     }
 
     // Update is called once per frame

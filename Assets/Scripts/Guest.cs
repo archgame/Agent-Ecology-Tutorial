@@ -10,6 +10,7 @@ public class Guest : MonoBehaviour
     //public global variables
     public Destination Destination; //where the agent is going
 
+    public int Baths = 3; //the number of baths our guest will take
     public float BathTime = 2.0f; //how long the agent stays in
     public Action Status; //our agent's current status
 
@@ -19,6 +20,7 @@ public class Guest : MonoBehaviour
     private NavMeshAgent _agent; //our Nav Mesh Agent Component
     private Conveyance _currentConveyance = null;
     private List<Destination> _destinations = new List<Destination>();
+    private Destination _tempDestination;
 
     /// <summary>
     /// Called only once right after hitting Play
@@ -43,17 +45,29 @@ public class Guest : MonoBehaviour
             _bathTime += Time.deltaTime; //_bathTime = _bathTime + Time.deltaTime
             if (_bathTime > BathTime)
             {
-                Status = Action.WALKING;
-                _bathTime = 0;
-                Destination.RemoveGuest(this);
-                _destinations.RemoveAt(0);
+                _tempDestination = Destination;
+                Destination = null;
 
-                GameObject entrance = GameObject.Find("Entrance");
-                Destination = entrance.GetComponent<Destination>();
-                UpdateDestination();
-                FindPath();
+                if (Baths == 0) //if guest is done with baths
+                {
+                    GameObject entrance = GameObject.Find("Entrance");
+                    Destination = entrance.GetComponent<Destination>();
+                }
+                else //if guest needs new bath assigned
+                {
+                    GuestManager.Instance.AssignOpenBath(this); //Destination is assigned inside metho
+                }
+                if (Destination == null) return;
+
+                //_tempDestination.RemoveGuest(this); //remove guest from current bath
+                _destinations[0].RemoveGuest(this); //remove guest from current bath
+                _destinations.RemoveAt(0); //remove current bath from destination list
+                _bathTime = 0; //reseting bath time
+                Status = Action.WALKING;  //start walking
+                UpdateDestination(); //update new destination
+                FindPath(); //finding best path
             }
-            //++++
+
             return; //so it doesn't run any code below
         }
 
@@ -138,7 +152,7 @@ public class Guest : MonoBehaviour
         Vector3 guestPosition = transform.position;
         Vector3 destinationPosition = Destination.transform.position;
         float distance = AgentWalkDistance(guestPosition, destinationPosition, Color.magenta);
-        Debug.Break();
+        //Debug.Break();
 
         //test all conveyances
         _currentConveyance = null;
@@ -160,7 +174,14 @@ public class Guest : MonoBehaviour
             }
         }
 
-        if (_currentConveyance == null) { UpdateDestination(); return; }
+        //if there are no conveyances, we update the destination list with current destination
+        if (_currentConveyance == null)
+        {
+            _destinations.Clear();
+            _destinations.Add(Destination);
+            UpdateDestination();
+            return;
+        }
 
         //update destinations
         _destinations.Clear();
@@ -175,6 +196,7 @@ public class Guest : MonoBehaviour
     /// </summary>
     private void StartBath()
     {
+        Baths--;
         Status = Action.BATHING;
         _agent.isStopped = true;
     }
