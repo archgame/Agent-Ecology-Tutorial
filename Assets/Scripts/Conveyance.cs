@@ -14,6 +14,11 @@ public class Conveyance : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        SetDestination();
+    }
+
+    public void SetDestination()
+    {
         _destination = GetComponentInChildren<Destination>();
     }
 
@@ -56,7 +61,6 @@ public class Conveyance : MonoBehaviour
 
         //we scale the distance by the weight factor
         distance /= Weight; //distance = distance/Weight;
-
         return distance;
     }
 
