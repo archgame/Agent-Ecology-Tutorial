@@ -73,6 +73,14 @@ public class Guest : MonoBehaviour
 
         //guard statement
         if (Destination == null) return; //return stops the update here until next frame
+
+        //orient gameobject direction
+        if (_agent.enabled)
+        {
+            Vector3 forward = _agent.velocity;
+            forward.y = 0;
+            transform.forward = forward;
+        }
         DestinationDistance(); //++++
     }
 

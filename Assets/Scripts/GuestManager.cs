@@ -49,7 +49,7 @@ public class GuestManager : MonoBehaviour
     {
         //guard statement, if bath house is full
         //if (_occupancyLimit <= _guest.Count) return;
-        if (_guest.Count >= _occupancyLimit) return;
+        if (_guest.Count >= _occupancyLimit - 1) return;
 
         //instantiate guest
         GameObject guest = Instantiate(GuestPrefab, transform.position, Quaternion.identity); //adding our gameobject to scene

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3195382997371946572}
   - component: {fileID: 3195382997371946568}
   - component: {fileID: 3195382997371946569}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Guest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 8
+  m_Speed: 4
   m_Acceleration: 120
   avoidancePriority: 50
   m_AngularSpeed: 360
@@ -131,5 +131,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Destination: {fileID: 0}
-  BathTime: 4
+  Baths: 3
+  BathTime: 360
   Status: 0
