@@ -139,63 +139,6 @@ public class SplineInterpolator : MonoBehaviour
     private float mCurrentTime;
     private int mCurrentIdx = 1;
 
-    private void Update()
-    {
-        /*/
-		if (mState == "Reset" || mState == "Stopped" || mNodes.Count < 4)
-			return;
-
-		mCurrentTime += Time.deltaTime;
-
-		// We advance to next point in the path
-		if (mCurrentTime >= mNodes[mCurrentIdx + 1].Time)
-		{
-			if (mCurrentIdx < mNodes.Count - 3)
-			{
-				mCurrentIdx++;
-			}
-			else
-			{
-				if (mState != "Loop")
-				{
-					mState = "Stopped";
-
-					// We stop right in the end point
-					transform.position = mNodes[mNodes.Count - 2].Point;
-
-					if (mRotations)
-						transform.rotation = mNodes[mNodes.Count - 2].Rot;
-
-					// We call back to inform that we are ended
-					if (mOnEndCallback != null)
-						mOnEndCallback();
-				}
-				else
-				{
-					mCurrentIdx = 1;
-					mCurrentTime = 0;
-				}
-			}
-		}
-
-		if (mState != "Stopped")
-		{
-			// Calculates the t param between 0 and 1
-			float param = (mCurrentTime - mNodes[mCurrentIdx].Time) / (mNodes[mCurrentIdx + 1].Time - mNodes[mCurrentIdx].Time);
-
-			// Smooth the param
-			param = MathUtils.Ease(param, mNodes[mCurrentIdx].EaseIO.x, mNodes[mCurrentIdx].EaseIO.y);
-
-			transform.position = GetHermiteInternal(mCurrentIdx, param);
-
-			if (mRotations)
-			{
-				transform.rotation = GetSquad(mCurrentIdx, param);
-			}
-		}
-		//*/
-    }
-
     private Quaternion GetSquad(int idxFirstPoint, float t)
     {
         Quaternion Q0 = mNodes[idxFirstPoint - 1].Rot;

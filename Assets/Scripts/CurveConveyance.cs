@@ -77,6 +77,7 @@ public class CurveConveyance : Conveyance
         {
             _gizmosPosition = BezierPosition(t, P0, P1, P2, P3);
             float distance = Vector3.Distance(lastPosition, _gizmosPosition); //calc between two points
+            lastPosition = _gizmosPosition;
             length += distance;
         }
         return length;

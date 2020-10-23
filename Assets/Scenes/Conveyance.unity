@@ -560,7 +560,7 @@ MonoBehaviour:
   - {fileID: 39473856}
   Weight: 3
   Speed: 1
-  Testing: 3.55
+  Testing: 0.16
 --- !u!114 &255241538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -676,7 +676,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 307662804}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.226, y: 0.5, z: -1.77}
+  m_LocalPosition: {x: -0.241, y: 0.5, z: -2.36}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 255241542}
