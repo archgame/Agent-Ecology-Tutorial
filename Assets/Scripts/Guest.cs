@@ -30,7 +30,7 @@ public class Guest : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         Status = Action.WALKING;
         UpdateDestination();
-        FindPath();
+        FindPath(ref _currentConveyance, ref _destinations);
     }
 
     // Update is called once per frame
@@ -65,7 +65,7 @@ public class Guest : MonoBehaviour
                 _bathTime = 0; //reseting bath time
                 Status = Action.WALKING;  //start walking
                 UpdateDestination(); //update new destination
-                FindPath(); //finding best path
+                FindPath(ref _currentConveyance, ref _destinations); //finding best path
             }
 
             return; //so it doesn't run any code below
@@ -75,7 +75,7 @@ public class Guest : MonoBehaviour
         if (Destination == null) return; //return stops the update here until next frame
 
         //orient gameobject direction
-        if (_agent.enabled)
+        if (_agent.enabled && _agent.velocity != Vector3.zero)
         {
             Vector3 forward = _agent.velocity;
             forward.y = 0;
@@ -126,21 +126,38 @@ public class Guest : MonoBehaviour
         _destinations.RemoveAt(0);
         Destination = _destinations[0];
         Status = Action.WALKING;
-        FindPath(); //this allows multiple conveyances
+        FindPath(ref _currentConveyance, ref _destinations); //this allows multiple conveyances
     }
 
     public float AgentWalkDistance(Vector3 start, Vector3 end, Color color)
     {
         //move agent to the start position
         Vector3 initialPosition = transform.position;
-        _agent.Move(start - initialPosition);
+        _agent.enabled = false;
+        transform.position = start;//_agent.Move(start - initialPosition);
+        _agent.enabled = true;
 
         //test to see if agent has path or not
         float distance = Mathf.Infinity;
         NavMeshPath navMeshPath = _agent.path;
-        if (!_agent.CalculatePath(end, navMeshPath)) { _agent.Move(initialPosition - start); return distance; }
+        if (!_agent.CalculatePath(end, navMeshPath))
+        {
+            //reset agent to original position
+            _agent.enabled = false;
+            transform.position = initialPosition;//_agent.Move(initialPosition - start);
+            _agent.enabled = true;
+            return distance;
+        }
+
         Vector3[] path = navMeshPath.corners;
-        if (path.Length < 2) { _agent.Move(initialPosition - start); return distance; }
+        if (path.Length < 2 || Vector3.Distance(path[path.Length - 1], end) > 2)
+        {
+            //reset agent to original position
+            _agent.enabled = false;
+            transform.position = initialPosition;//_agent.Move(initialPosition - start);
+            _agent.enabled = true;
+            return distance;
+        }
 
         //get walking path distance
         distance = 0;
@@ -150,34 +167,39 @@ public class Guest : MonoBehaviour
             Debug.DrawLine(path[i - 1], path[i], color); //visualizing the path, not necessary to return
         }
 
-        _agent.Move(initialPosition - start);
+        //reset agent to original position
+        _agent.enabled = false;
+        transform.position = initialPosition;//_agent.Move(initialPosition - start);
+        _agent.enabled = true;
+
         return distance;
     }
 
-    public void FindPath()
+    public virtual void FindPath(ref Conveyance currentConveyance, ref List<Destination> destinations)
     {
+        //Debug.Break();
+
         //get walking path distance
         Vector3 guestPosition = transform.position;
         Vector3 destinationPosition = Destination.transform.position;
-        float distance = AgentWalkDistance(guestPosition, destinationPosition, Color.magenta);
-        //Debug.Break();
+        float distance = AgentWalkDistance(guestPosition, destinationPosition, Color.yellow);
 
         //test all conveyances
-        _currentConveyance = null;
+        currentConveyance = null;
         Conveyance[] conveyances = GameObject.FindObjectsOfType<Conveyance>();
         foreach (Conveyance c in conveyances)
         {
-            float distToC = AgentWalkDistance(guestPosition, c.StartPosition(), Color.green);
-            float distC = c.WeightedTravelDistance();
-            float distFromC = AgentWalkDistance(c.EndPosition(), destinationPosition, Color.red);
+            float distToC = AgentWalkDistance(guestPosition, c.StartPosition(guestPosition.y), Color.green);
+            float distC = c.WeightedTravelDistance(guestPosition.y, destinationPosition.y);
+            float distFromC = AgentWalkDistance(c.EndPosition(destinationPosition.y), destinationPosition, Color.red);
 
-            Debug.DrawLine(guestPosition, c.StartPosition(), Color.cyan);
-            Debug.DrawLine(c.StartPosition(), c.EndPosition(), Color.cyan);
-            Debug.DrawLine(c.EndPosition(), destinationPosition, Color.cyan);
+            //Debug.DrawLine(guestPosition, c.StartPosition(), Color.black);
+            Debug.DrawLine(c.StartPosition(guestPosition.y), c.EndPosition(destinationPosition.y), Color.cyan);
+            //Debug.DrawLine(c.EndPosition(), destinationPosition, Color.white);
 
             if (distance > distToC + distC + distFromC)
             {
-                _currentConveyance = c;
+                currentConveyance = c;
                 distance = distToC + distC + distFromC;
             }
         }
@@ -185,17 +207,17 @@ public class Guest : MonoBehaviour
         //if there are no conveyances, we update the destination list with current destination
         if (_currentConveyance == null)
         {
-            _destinations.Clear();
-            _destinations.Add(Destination);
+            destinations.Clear();
+            destinations.Add(Destination);
             UpdateDestination();
             return;
         }
 
         //update destinations
-        _destinations.Clear();
-        _destinations.Add(_currentConveyance.GetDestination());
-        _destinations.Add(Destination);
-        Destination = _destinations[0];
+        destinations.Clear();
+        destinations.Add(currentConveyance.GetDestination(guestPosition.y));
+        destinations.Add(Destination);
+        Destination = destinations[0];
         UpdateDestination();
     }
 
@@ -207,5 +229,11 @@ public class Guest : MonoBehaviour
         Baths--;
         Status = Action.BATHING;
         _agent.isStopped = true;
+    }
+
+    public Destination GetUltimateDestination()
+    {
+        if (_destinations.Count == 0) return null;
+        return _destinations[_destinations.Count - 1];
     }
 }

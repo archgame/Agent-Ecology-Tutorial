@@ -29,4 +29,10 @@ public class Destination : MonoBehaviour
         if (_occupants.Count >= OccupancyLimit) { return true; } //if the number of guests equals occupants, it is full
         return false;
     }
+
+    public bool IsEmpty()
+    {
+        if (_occupants.Count == 0) { return true; }
+        return false;
+    }
 }

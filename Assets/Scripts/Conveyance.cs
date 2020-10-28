@@ -17,7 +17,7 @@ public class Conveyance : MonoBehaviour
         SetDestination();
     }
 
-    public void SetDestination()
+    public virtual void SetDestination()
     {
         _destination = GetComponentInChildren<Destination>();
     }
@@ -43,7 +43,7 @@ public class Conveyance : MonoBehaviour
         }
     }
 
-    public float WeightedTravelDistance()
+    public virtual float WeightedTravelDistance(float startHeight = 0, float endHeight = 0)
     {
         float distance = 0;
         //guard statement
@@ -64,13 +64,13 @@ public class Conveyance : MonoBehaviour
         return distance;
     }
 
-    public Vector3 StartPosition()
+    public virtual Vector3 StartPosition(float y = 0)
     {
         if (Path.Length == 0) { return Vector3.zero; }
         return Path[0].transform.position;
     }
 
-    public Vector3 EndPosition()
+    public virtual Vector3 EndPosition(float y = 0)
     {
         if (Path.Length == 0) { return Vector3.zero; }
         return Path[Path.Length - 1].transform.position;
@@ -81,7 +81,7 @@ public class Conveyance : MonoBehaviour
         //doesn't go to this line
     }
 
-    public Destination GetDestination()
+    public virtual Destination GetDestination(float y = 0)
     {
         return _destination;
     }
