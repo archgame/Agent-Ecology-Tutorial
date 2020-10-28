@@ -299,7 +299,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2975401558996894992}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 17.36, y: 0, z: 21.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -321,11 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9525b76953c7e2a479e508745e21d09c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path:
-  - {fileID: 2975401560581604370}
-  - {fileID: 2975401558625713847}
-  - {fileID: 2975401559025065123}
-  - {fileID: 2975401558989108121}
+  Path: []
   Weight: 3
   Speed: 8
   Car: {fileID: 2975401558920109103}

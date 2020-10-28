@@ -18,7 +18,10 @@ public class Guest : MonoBehaviour
     private float _bathTime = 0; //how long the agent has been in the bath
 
     private NavMeshAgent _agent; //our Nav Mesh Agent Component
-    private Conveyance _currentConveyance = null;
+
+    [HideInInspector]
+    public Conveyance _currentConveyance = null;
+
     private List<Destination> _destinations = new List<Destination>();
     private Destination _tempDestination;
 
@@ -120,7 +123,7 @@ public class Guest : MonoBehaviour
         _agent.isStopped = false;
     }
 
-    public void NextDestination()
+    public virtual void NextDestination()
     {
         _agent.enabled = true;
         _destinations.RemoveAt(0);
@@ -189,6 +192,8 @@ public class Guest : MonoBehaviour
         Conveyance[] conveyances = GameObject.FindObjectsOfType<Conveyance>();
         foreach (Conveyance c in conveyances)
         {
+            //guard statement, how many people are on the conveyance
+
             float distToC = AgentWalkDistance(guestPosition, c.StartPosition(guestPosition.y), Color.green);
             float distC = c.WeightedTravelDistance(guestPosition.y, destinationPosition.y);
             float distFromC = AgentWalkDistance(c.EndPosition(destinationPosition.y), destinationPosition, Color.red);
