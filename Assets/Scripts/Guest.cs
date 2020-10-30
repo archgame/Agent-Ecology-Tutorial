@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Guest : MonoBehaviour
 {
+    [Header("UI")]
+    public Text Text;
+
+    public Slider Slider;
+
     public enum Action { BATHING, WALKING, FOLLOWING, RIDING }
 
+    [Header("Destination")]
     //public global variables
     public Destination Destination; //where the agent is going
 
@@ -17,7 +24,8 @@ public class Guest : MonoBehaviour
     //private global variables
     private float _bathTime = 0; //how long the agent has been in the bath
 
-    private NavMeshAgent _agent; //our Nav Mesh Agent Component
+    [HideInInspector]
+    public NavMeshAgent _agent; //our Nav Mesh Agent Component
 
     [HideInInspector]
     public Conveyance _currentConveyance = null;
@@ -240,5 +248,29 @@ public class Guest : MonoBehaviour
     {
         if (_destinations.Count == 0) return null;
         return _destinations[_destinations.Count - 1];
+    }
+
+    public void SetText(string text)
+    {
+        if (Text == null) return;
+        Text.text = text;
+    }
+
+    public void SetSlider(float i)
+    {
+        if (Slider == null) return;
+        Slider.value = i;
+    }
+
+    public string GetText()
+    {
+        if (Slider == null) return string.Empty;
+        return Text.text;
+    }
+
+    public float GetSliderValue()
+    {
+        if (Slider == null) return Mathf.Infinity;
+        return Slider.value;
     }
 }
