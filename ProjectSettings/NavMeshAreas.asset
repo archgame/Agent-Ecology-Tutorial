@@ -11,10 +11,10 @@ NavMeshProjectSettings:
     cost: 1
   - name: Jump
     cost: 2
-  - name: 
-    cost: 1
-  - name: 
-    cost: 1
+  - name: Stair
+    cost: 0.25
+  - name: Hard Stair
+    cost: 3
   - name: 
     cost: 1
   - name: 

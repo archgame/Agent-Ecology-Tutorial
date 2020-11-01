@@ -70,6 +70,7 @@ public class GuestManager : MonoBehaviour
         GameObject guest = Instantiate(GuestPrefab, transform.position, Quaternion.identity); //adding our gameobject to scene
         _guest.Add(guest.GetComponent<Guest>()); //adding our gameobject guest script to the guest list
         Guest guestScript = guest.GetComponent<Guest>();
+        //List<Destination> visitedBaths = guestScript.VisitedBaths();
         AssignOpenBath(guestScript);
     }
 
@@ -140,5 +141,10 @@ public class GuestManager : MonoBehaviour
     public List<Guest> GuestList()
     {
         return _guest;
+    }
+
+    public List<Destination> DestinationList()
+    {
+        return _destinations;
     }
 }

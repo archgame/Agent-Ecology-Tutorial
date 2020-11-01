@@ -11,7 +11,7 @@ public class Guest : MonoBehaviour
 
     public Slider Slider;
 
-    public enum Action { BATHING, WALKING, FOLLOWING, RIDING }
+    public enum Action { BATHING, WALKING, FOLLOWING, RIDING, RANDOM }
 
     [Header("Destination")]
     //public global variables
@@ -30,8 +30,12 @@ public class Guest : MonoBehaviour
     [HideInInspector]
     public Conveyance _currentConveyance = null;
 
-    private List<Destination> _destinations = new List<Destination>();
-    private Destination _tempDestination;
+    public List<Destination> _destinations = new List<Destination>();
+    public Destination _tempDestination;
+    private List<Destination> _visitedBaths = new List<Destination>();
+    private float _timer = 0;
+    public Vector2 WanderTimer = new Vector2(2, 5);
+    private float _wanderTimer = 2;
 
     /// <summary>
     /// Called only once right after hitting Play
@@ -39,14 +43,44 @@ public class Guest : MonoBehaviour
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
-        Status = Action.WALKING;
-        UpdateDestination();
-        FindPath(ref _currentConveyance, ref _destinations);
+
+        Status = Action.RANDOM;
+        Vector3 newPos = RandomNavSphere(transform.position, 100, -1);
+        UpdateDestination(newPos);
+
+        //Status = Action.WALKING;
+        //UpdateDestination();
+        //FindPath(ref _currentConveyance, ref _destinations);
     }
 
     // Update is called once per frame
     public void GuestUpdate()
     {
+        if (Status == Action.RANDOM)
+        {
+            _timer += Time.deltaTime;
+            if (_timer >= _wanderTimer)
+            {
+                /*/
+                List<Destination> baths = GuestManager.Instance.DestinationList();
+                foreach (Destination bath in baths)
+                {
+                    float distance = Vector3.Distance(bath.transform.position, transform.position);
+                    Debug.Log(distance);
+                    if (distance > 15) continue;
+                    GuestWalkDestination();
+                    return;
+                }
+                //*/
+
+                Vector3 newPos = RandomNavSphere(transform.position, 100, -1);
+                UpdateDestination(newPos);
+                _timer = 0;
+                _wanderTimer = Random.Range(WanderTimer.x, WanderTimer.y);
+                //Debug.Log("Wander Timer: " + _wanderTimer);
+            }
+            return;
+        }
         if (Status == Action.RIDING)
         {
             _currentConveyance.ConveyanceUpdate(this);
@@ -66,10 +100,11 @@ public class Guest : MonoBehaviour
                 }
                 else //if guest needs new bath assigned
                 {
-                    GuestManager.Instance.AssignOpenBath(this); //Destination is assigned inside metho
+                    GuestManager.Instance.AssignOpenBath(this, _visitedBaths); //Destination is assigned inside metho
                 }
                 if (Destination == null) return;
 
+                SetText("Walking");
                 //_tempDestination.RemoveGuest(this); //remove guest from current bath
                 _destinations[0].RemoveGuest(this); //remove guest from current bath
                 _destinations.RemoveAt(0); //remove current bath from destination list
@@ -93,6 +128,13 @@ public class Guest : MonoBehaviour
             transform.forward = forward;
         }
         DestinationDistance(); //++++
+    }
+
+    public void GuestWalkDestination()
+    {
+        Status = Action.WALKING;
+        UpdateDestination();
+        FindPath(ref _currentConveyance, ref _destinations);
     }
 
     private void DestinationDistance()
@@ -128,6 +170,12 @@ public class Guest : MonoBehaviour
     private void UpdateDestination()
     {
         _agent.SetDestination(Destination.transform.position);
+        _agent.isStopped = false;
+    }
+
+    private void UpdateDestination(Vector3 position)
+    {
+        _agent.SetDestination(position);
         _agent.isStopped = false;
     }
 
@@ -240,8 +288,10 @@ public class Guest : MonoBehaviour
     private void StartBath()
     {
         Baths--;
+        _visitedBaths.Add(Destination);
         Status = Action.BATHING;
         _agent.isStopped = true;
+        SetText("Bathing");
     }
 
     public Destination GetUltimateDestination()
@@ -272,5 +322,22 @@ public class Guest : MonoBehaviour
     {
         if (Slider == null) return Mathf.Infinity;
         return Slider.value;
+    }
+
+    public List<Destination> VisitedBaths()
+    {
+        return _visitedBaths;
+    }
+
+    public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+    {
+        Debug.Break();
+        Vector3 randDirection = Random.insideUnitSphere * dist;
+        randDirection += origin;
+        NavMeshHit navHit;
+        NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+        Debug.DrawLine(origin, randDirection, Color.blue);
+        Debug.DrawRay(navHit.position, Vector3.up * 3, Color.cyan);
+        return navHit.position;
     }
 }

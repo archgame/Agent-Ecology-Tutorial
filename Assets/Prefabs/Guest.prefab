@@ -469,9 +469,10 @@ MonoBehaviour:
   Text: {fileID: 4618845706125171076}
   Slider: {fileID: 1077619122130130432}
   Destination: {fileID: 0}
-  Baths: 1
+  Baths: 3
   BathTime: 2
   Status: 0
+  _agent: {fileID: 0}
   _currentConveyance: {fileID: 0}
 --- !u!1 &3222749569153331426
 GameObject:
