@@ -3302,7 +3302,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1820981033}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 883fdf9ed8dc82144bafb1727b954404, type: 3}
+  m_Script: {fileID: 11500000, guid: dad3e667bd3bbdf47af77967e28b5158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   OccupancyLimit: 1
@@ -3320,6 +3320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GuestPrefab: {fileID: 3195382997371946575, guid: eae036383359e4a4cabebc3c20bd5390,
     type: 3}
+  EmployeePrefab: {fileID: 0}
   EntranceRate: 3600
 --- !u!1 &1831919570
 GameObject:
