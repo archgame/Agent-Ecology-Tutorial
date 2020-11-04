@@ -26,6 +26,7 @@ public class Destination : MonoBehaviour
 
     public bool IsFull()
     {
+        if (OccupancyLimit == 0) return false; //if there is no occupancy limit, it is never full
         if (_occupants.Count >= OccupancyLimit) { return true; } //if the number of guests equals occupants, it is full
         return false;
     }

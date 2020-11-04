@@ -43,14 +43,13 @@ public class Guest : MonoBehaviour
     private void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        //Status = Action.RANDOM;
+        //Vector3 newPos = RandomNavSphere(transform.position, 100, -1);
+        //UpdateDestination(newPos);
 
-        Status = Action.RANDOM;
-        Vector3 newPos = RandomNavSphere(transform.position, 100, -1);
-        UpdateDestination(newPos);
-
-        //Status = Action.WALKING;
-        //UpdateDestination();
-        //FindPath(ref _currentConveyance, ref _destinations);
+        Status = Action.WALKING;
+        UpdateDestination();
+        FindPath(ref _currentConveyance, ref _destinations);
     }
 
     // Update is called once per frame
@@ -61,7 +60,7 @@ public class Guest : MonoBehaviour
             _timer += Time.deltaTime;
             if (_timer >= _wanderTimer)
             {
-                /*/
+                //*/
                 List<Destination> baths = GuestManager.Instance.DestinationList();
                 foreach (Destination bath in baths)
                 {
@@ -331,7 +330,7 @@ public class Guest : MonoBehaviour
 
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
     {
-        Debug.Break();
+        //Debug.Break();
         Vector3 randDirection = Random.insideUnitSphere * dist;
         randDirection += origin;
         NavMeshHit navHit;
