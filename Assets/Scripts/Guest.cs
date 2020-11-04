@@ -94,8 +94,7 @@ public class Guest : MonoBehaviour
 
                 if (Baths == 0) //if guest is done with baths
                 {
-                    GameObject entrance = GameObject.Find("Entrance");
-                    Destination = entrance.GetComponent<Destination>();
+                    Destination = GuestManager.Instance.RandomEntrance();
                 }
                 else //if guest needs new bath assigned
                 {

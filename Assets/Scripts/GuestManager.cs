@@ -8,12 +8,14 @@ public class GuestManager : MonoBehaviour
     public static GuestManager Instance { get; private set; } //for singleton
 
     public GameObject GuestPrefab; //{get;set;}guest gameobject to be instantiated
+    public GameObject EmployeePrefab;
 
     public float EntranceRate = 0.5f; //the rate at which guests will enter
 
     private List<Guest> _guest = new List<Guest>(); //list of guests
     private List<Destination> _destinations = new List<Destination>(); //list of destinations
     private List<Guest> _exitedGuests = new List<Guest>(); //guests that will exit
+    private GuestEntrance[] _guestEntrances;
 
     private float _lastEntrance = 0; //time since last entrant
     private int _occupancyLimit = 0; //occupancy limit maximum
@@ -43,6 +45,9 @@ public class GuestManager : MonoBehaviour
             _destinations.Add(destination); //adding the destination script to the list
             _occupancyLimit += destination.OccupancyLimit; //increasing the occupancy limit maximum
         }
+
+        _guestEntrances = GameObject.FindObjectsOfType<GuestEntrance>();
+
         AdmitGuest();
     }
 
@@ -67,7 +72,9 @@ public class GuestManager : MonoBehaviour
         if (_guest.Count >= _occupancyLimit - 1) return;
 
         //instantiate guest
-        GameObject guest = Instantiate(GuestPrefab, transform.position, Quaternion.identity); //adding our gameobject to scene
+        int randomIndex = Random.Range(0, _guestEntrances.Length);
+        Vector3 position = _guestEntrances[randomIndex].transform.position;
+        GameObject guest = Instantiate(GuestPrefab, position, Quaternion.identity); //adding our gameobject to scene
         _guest.Add(guest.GetComponent<Guest>()); //adding our gameobject guest script to the guest list
         Guest guestScript = guest.GetComponent<Guest>();
         //List<Destination> visitedBaths = guestScript.VisitedBaths();
@@ -146,5 +153,11 @@ public class GuestManager : MonoBehaviour
     public List<Destination> DestinationList()
     {
         return _destinations;
+    }
+
+    public Destination RandomEntrance()
+    {
+        int randomIndex = Random.Range(0, _guestEntrances.Length);
+        return _guestEntrances[randomIndex];
     }
 }

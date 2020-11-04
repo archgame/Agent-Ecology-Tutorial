@@ -38,6 +38,116 @@ public class Paternoster : Conveyance
         return (x >= 0) ^ (y < 0);
     }
 
+    private void Update()
+    {
+        for (int i = 0; i < Cars.transform.childCount; i++)
+        {
+            GameObject car = Cars.transform.GetChild(i).gameObject;
+
+            //check if car is open
+            if (_carRiders[car] == null)
+            {
+                float carDirection = _positions[_cars[car]].y - car.transform.position.y;
+
+                foreach (KeyValuePair<Guest, Vector3> kvp in _guests)
+                {
+                    Guest guest = kvp.Key;
+
+                    //guard statements
+                    if (_riders.Contains(guest)) continue; //make sure guest doesn't move between cars
+                    if (Mathf.Abs(car.transform.position.y - guest.transform.position.y) > 0.2f) continue;
+
+                    //test guest direction
+                    float guestDirection = kvp.Value.y - guest.transform.position.y;
+                    if (!SameSign(carDirection, guestDirection)) continue; //continue to next guest
+
+                    //load guest
+                    _riders.Add(guest);
+                    _carRiders[car] = guest;
+                    IEnumerator coroutine = LoadPassenger(car, guest);
+                    StartCoroutine(coroutine);
+                    break; //don't check any more guests
+                }
+            }
+            //check if guest has arrived at level
+            else
+            {
+                Guest guest = _carRiders[car];
+                Vector3 UnloadPosition = _guests[guest];
+                if (Mathf.Abs(UnloadPosition.y - guest.transform.position.y) < 0.2f)
+                {
+                    //unload guest
+                    _carRiders[car] = null;
+                    IEnumerator coroutine = UnloadPassenger(car, guest);
+                    StartCoroutine(coroutine);
+                }
+            }
+
+            //animate cars
+            //when the car reaches the position, we increase the index to the next position
+            if (car.transform.position == _positions[_cars[car]])
+            {
+                int p = _cars[car] + 1;
+                if (p >= _positions.Count) { p = 0; }
+                _cars[car] = p;
+            }
+
+            //move car
+            //int j = _cars[car];
+            Vector3 newPos = Vector3.MoveTowards(car.transform.position,
+                _positions[_cars[car]], //_positions[j]
+                Speed * Time.deltaTime);
+            car.transform.position = newPos;
+        }
+    }
+
+    private IEnumerator LoadPassenger(GameObject car, Guest guest)
+    {
+        bool loading = true;
+        while (loading)
+        {
+            guest.transform.position = Vector3.MoveTowards(guest.transform.position,
+                car.transform.position,
+                Time.deltaTime * Speed * 8);
+
+            if (Vector3.Distance(guest.transform.position, car.transform.position) < 0.01f) { loading = false; }
+            yield return new WaitForEndOfFrame();
+        }
+
+        guest.transform.parent = car.transform;
+        yield break;
+    }
+
+    private IEnumerator UnloadPassenger(GameObject car, Guest guest)
+    {
+        bool unloading = true;
+        while (unloading)
+        {
+            guest.transform.position = Vector3.MoveTowards(guest.transform.position,
+                _guests[guest],
+                Time.deltaTime * Speed * 8);
+
+            if (Vector3.Distance(guest.transform.position, _guests[guest]) < 0.01f) { unloading = false; }
+            yield return new WaitForEndOfFrame();
+        }
+
+        _riders.Remove(guest);
+        _guests.Remove(guest);
+        guest.transform.parent = null;
+        guest.NextDestination();
+        yield break;
+    }
+
+    public override void ConveyanceUpdate(Guest guest)
+    {
+        //guard statement if guest is already added
+        if (_guests.ContainsKey(guest)) return;
+
+        Destination destination = guest.GetUltimateDestination();
+        destination = GetDestination(destination.transform.position.y);
+        _guests.Add(guest, destination.transform.position);
+    }
+
     public override Destination GetDestination(float y = 0)
     {
         Destination[] tempDestinations = _destinations;
