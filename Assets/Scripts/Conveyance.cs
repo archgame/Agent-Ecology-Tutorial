@@ -43,7 +43,7 @@ public class Conveyance : MonoBehaviour
         }
     }
 
-    public virtual float WeightedTravelDistance(float startHeight = 0, float endHeight = 0)
+    public virtual float WeightedTravelDistance(Vector3 start, Vector3 end)
     {
         float distance = 0;
         //guard statement
@@ -64,13 +64,13 @@ public class Conveyance : MonoBehaviour
         return distance;
     }
 
-    public virtual Vector3 StartPosition(float y = 0)
+    public virtual Vector3 StartPosition(Vector3 vec)
     {
         if (Path.Length == 0) { return Vector3.zero; }
         return Path[0].transform.position;
     }
 
-    public virtual Vector3 EndPosition(float y = 0)
+    public virtual Vector3 EndPosition(Vector3 vec)
     {
         if (Path.Length == 0) { return Vector3.zero; }
         return Path[Path.Length - 1].transform.position;
@@ -81,8 +81,13 @@ public class Conveyance : MonoBehaviour
         //doesn't go to this line
     }
 
-    public virtual Destination GetDestination(float y = 0)
+    public virtual Destination GetDestination(Vector3 vec)
     {
         return _destination;
+    }
+
+    public virtual bool IsFull()
+    {
+        return false;
     }
 }

@@ -91,7 +91,7 @@ public class Elevator : Conveyance
         if (!_guests.ContainsKey(guest))
         {
             Destination destination = guest.GetUltimateDestination(); //getting the guest's final destination
-            destination = GetDestination(destination.transform.position.y); //converting into elevator stop floor
+            destination = GetDestination(destination.transform.position); //converting into elevator stop floor
             _guests.Add(guest, destination.transform.position);
 
             //add button press
@@ -108,7 +108,7 @@ public class Elevator : Conveyance
         //call if the car if it isn't on the guest level
         if (Mathf.Abs(Car.transform.position.y - guest.transform.position.y) > 0.2f) //if Car and guest aren't on same level
         {
-            Destination destination = GetDestination(guest.transform.position.y);
+            Destination destination = GetDestination(guest.transform.position);
 
             //add button press
             if (!_buttonPressed.Contains(destination.transform.position.y))
@@ -146,7 +146,7 @@ public class Elevator : Conveyance
         //switch out the point when begin the unloading process
         if (guest.transform.position == _riders[guest].transform.position)
         {
-            Destination destination = GetDestination(Car.transform.position.y);
+            Destination destination = GetDestination(Car.transform.position);
             Vector3 offset = destination.transform.position - Car.transform.position;
             _guests[guest] = guest.transform.position + offset;
         }
@@ -202,38 +202,38 @@ public class Elevator : Conveyance
         return true;
     }
 
-    public override Destination GetDestination(float y = 0)
+    public override Destination GetDestination(Vector3 vec)
     {
         Destination[] tempDestinations = _destinations;
-        tempDestinations = tempDestinations.OrderBy(go => Mathf.Abs(go.transform.position.y - y)).ToArray();
+        tempDestinations = tempDestinations.OrderBy(go => Mathf.Abs(go.transform.position.y - vec.y)).ToArray();
         //tempDestinations = tempDestinations.OrderBy(x => x.name).ToArray();
         //tempDestinations = tempDestinations.OrderBy(x => Vector3.Distance(x.transform.position, Vector3.zero)).ToArray();
         return tempDestinations[0];
     }
 
-    public override Vector3 StartPosition(float y = 0)
+    public override Vector3 StartPosition(Vector3 vec)
     {
         if (_destinations.Length == 0) { return Vector3.zero; }
-        Destination destination = GetDestination(y);
+        Destination destination = GetDestination(vec);
         return destination.transform.position;
     }
 
-    public override Vector3 EndPosition(float y = 0)
+    public override Vector3 EndPosition(Vector3 vec)
     {
         if (_destinations.Length == 0) { return Vector3.zero; }
-        Destination destination = GetDestination(y);
+        Destination destination = GetDestination(vec);
         return destination.transform.position;
     }
 
-    public override float WeightedTravelDistance(float startHeight = 0, float endHeight = 0)
+    public override float WeightedTravelDistance(Vector3 start, Vector3 end)
     {
         float distance = 0;
         //guard statement
         if (_destinations.Length < 2) return distance;
 
         //get the total path distance
-        Destination go1 = GetDestination(startHeight);
-        Destination go2 = GetDestination(endHeight);
+        Destination go1 = GetDestination(start);
+        Destination go2 = GetDestination(end);
         distance = Vector3.Distance(go1.transform.position, go2.transform.position);
 
         //we scale the distance by the weight factor

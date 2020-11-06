@@ -144,42 +144,42 @@ public class Paternoster : Conveyance
         if (_guests.ContainsKey(guest)) return;
 
         Destination destination = guest.GetUltimateDestination();
-        destination = GetDestination(destination.transform.position.y);
+        destination = GetDestination(destination.transform.position);
         _guests.Add(guest, destination.transform.position);
     }
 
-    public override Destination GetDestination(float y = 0)
+    public override Destination GetDestination(Vector3 vec)
     {
         Destination[] tempDestinations = _destinations;
-        tempDestinations = tempDestinations.OrderBy(go => Mathf.Abs(go.transform.position.y - y)).ToArray();
+        tempDestinations = tempDestinations.OrderBy(go => Mathf.Abs(go.transform.position.y - vec.y)).ToArray();
         //tempDestinations = tempDestinations.OrderBy(x => x.name).ToArray();
         //tempDestinations = tempDestinations.OrderBy(x => Vector3.Distance(x.transform.position, Vector3.zero)).ToArray();
         return tempDestinations[0];
     }
 
-    public override Vector3 StartPosition(float y = 0)
+    public override Vector3 StartPosition(Vector3 vec)
     {
         if (_destinations.Length == 0) { return Vector3.zero; }
-        Destination destination = GetDestination(y);
+        Destination destination = GetDestination(vec);
         return destination.transform.position;
     }
 
-    public override Vector3 EndPosition(float y = 0)
+    public override Vector3 EndPosition(Vector3 vec)
     {
         if (_destinations.Length == 0) { return Vector3.zero; }
-        Destination destination = GetDestination(y);
+        Destination destination = GetDestination(vec);
         return destination.transform.position;
     }
 
-    public override float WeightedTravelDistance(float startHeight = 0, float endHeight = 0)
+    public override float WeightedTravelDistance(Vector3 start, Vector3 end)
     {
         float distance = 0;
         //guard statement
         if (_destinations.Length < 2) return distance;
 
         //get the total path distance
-        Destination go1 = GetDestination(startHeight);
-        Destination go2 = GetDestination(endHeight);
+        Destination go1 = GetDestination(start);
+        Destination go2 = GetDestination(end);
         distance = Vector3.Distance(go1.transform.position, go2.transform.position);
 
         //we scale the distance by the weight factor

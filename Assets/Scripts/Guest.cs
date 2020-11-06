@@ -186,23 +186,27 @@ public class Guest : MonoBehaviour
         FindPath(ref _currentConveyance, ref _destinations); //this allows multiple conveyances
     }
 
-    public float AgentWalkDistance(Vector3 start, Vector3 end, Color color)
+    public static float AgentWalkDistance(NavMeshAgent agent, Transform trans,
+        Vector3 start, Vector3 end, Color color)
     {
+        //in case they are the same position
+        if (Vector3.Distance(start, end) < 0.01f) return 0;
+
         //move agent to the start position
-        Vector3 initialPosition = transform.position;
-        _agent.enabled = false;
-        transform.position = start;//_agent.Move(start - initialPosition);
-        _agent.enabled = true;
+        Vector3 initialPosition = trans.position;
+        agent.enabled = false;
+        trans.position = start;//_agent.Move(start - initialPosition);
+        agent.enabled = true;
 
         //test to see if agent has path or not
         float distance = Mathf.Infinity;
-        NavMeshPath navMeshPath = _agent.path;
-        if (!_agent.CalculatePath(end, navMeshPath))
+        NavMeshPath navMeshPath = agent.path;
+        if (!agent.CalculatePath(end, navMeshPath))
         {
             //reset agent to original position
-            _agent.enabled = false;
-            transform.position = initialPosition;//_agent.Move(initialPosition - start);
-            _agent.enabled = true;
+            agent.enabled = false;
+            trans.position = initialPosition;//_agent.Move(initialPosition - start);
+            agent.enabled = true;
             return distance;
         }
 
@@ -210,9 +214,9 @@ public class Guest : MonoBehaviour
         if (path.Length < 2 || Vector3.Distance(path[path.Length - 1], end) > 2)
         {
             //reset agent to original position
-            _agent.enabled = false;
-            transform.position = initialPosition;//_agent.Move(initialPosition - start);
-            _agent.enabled = true;
+            agent.enabled = false;
+            trans.position = initialPosition;//_agent.Move(initialPosition - start);
+            agent.enabled = true;
             return distance;
         }
 
@@ -225,9 +229,9 @@ public class Guest : MonoBehaviour
         }
 
         //reset agent to original position
-        _agent.enabled = false;
-        transform.position = initialPosition;//_agent.Move(initialPosition - start);
-        _agent.enabled = true;
+        agent.enabled = false;
+        trans.position = initialPosition;//_agent.Move(initialPosition - start);
+        agent.enabled = true;
 
         return distance;
     }
@@ -239,7 +243,7 @@ public class Guest : MonoBehaviour
         //get walking path distance
         Vector3 guestPosition = transform.position;
         Vector3 destinationPosition = Destination.transform.position;
-        float distance = AgentWalkDistance(guestPosition, destinationPosition, Color.yellow);
+        float distance = AgentWalkDistance(_agent, transform, guestPosition, destinationPosition, Color.yellow);
 
         //test all conveyances
         currentConveyance = null;
@@ -248,12 +252,14 @@ public class Guest : MonoBehaviour
         {
             //guard statement, how many people are on the conveyance
 
-            float distToC = AgentWalkDistance(guestPosition, c.StartPosition(guestPosition.y), Color.green);
-            float distC = c.WeightedTravelDistance(guestPosition.y, destinationPosition.y);
-            float distFromC = AgentWalkDistance(c.EndPosition(destinationPosition.y), destinationPosition, Color.red);
+            if (c.IsFull()) continue;
+
+            float distToC = AgentWalkDistance(_agent, transform, guestPosition, c.StartPosition(guestPosition), Color.green);
+            float distC = c.WeightedTravelDistance(guestPosition, destinationPosition);
+            float distFromC = AgentWalkDistance(_agent, transform, c.EndPosition(destinationPosition), destinationPosition, Color.red);
 
             //Debug.DrawLine(guestPosition, c.StartPosition(), Color.black);
-            Debug.DrawLine(c.StartPosition(guestPosition.y), c.EndPosition(destinationPosition.y), Color.cyan);
+            Debug.DrawLine(c.StartPosition(guestPosition), c.EndPosition(destinationPosition), Color.cyan);
             //Debug.DrawLine(c.EndPosition(), destinationPosition, Color.white);
 
             if (distance > distToC + distC + distFromC)
@@ -273,8 +279,14 @@ public class Guest : MonoBehaviour
         }
 
         //update destinations
+        if (_currentConveyance.GetType() == typeof(Vehicle))
+        {
+            Vehicle vehicle = _currentConveyance as Vehicle;
+            vehicle.SetWaiting(this);
+        }
+
         destinations.Clear();
-        destinations.Add(currentConveyance.GetDestination(guestPosition.y));
+        destinations.Add(currentConveyance.GetDestination(guestPosition));
         destinations.Add(Destination);
         Destination = destinations[0];
         UpdateDestination();
