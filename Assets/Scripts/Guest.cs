@@ -252,7 +252,6 @@ public class Guest : MonoBehaviour
         foreach (Conveyance c in conveyances)
         {
             //guard statement, how many people are on the conveyance
-
             if (c.IsFull()) continue;
 
             float distToC = AgentWalkDistance(_agent, transform, guestPosition, c.StartPosition(guestPosition), Color.green);
@@ -271,7 +270,7 @@ public class Guest : MonoBehaviour
         }
 
         //if there are no conveyances, we update the destination list with current destination
-        if (_currentConveyance == null)
+        if (currentConveyance == null)
         {
             destinations.Clear();
             destinations.Add(Destination);
@@ -280,7 +279,7 @@ public class Guest : MonoBehaviour
         }
 
         //update destinations
-        if (_currentConveyance.GetType() == typeof(Vehicle))
+        if (currentConveyance.GetType() == typeof(Vehicle))
         {
             Vehicle vehicle = _currentConveyance as Vehicle;
             vehicle.SetWaiting(this);
