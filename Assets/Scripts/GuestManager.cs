@@ -81,7 +81,7 @@ public class GuestManager : MonoBehaviour
         AssignOpenBath(guestScript);
     }
 
-    public void AssignOpenBath(Guest guest, List<Destination> visited = null)
+    public virtual void AssignOpenBath(Guest guest, List<Destination> visited = null)
     {
         foreach (Destination bath in _destinations)
         {
@@ -128,7 +128,7 @@ public class GuestManager : MonoBehaviour
         }
     }
 
-    public void ExitGuests()
+    public virtual void ExitGuests()
     {
         //foreach(Guest guest in _exitedGuests)
         for (int i = 0; i < _exitedGuests.Count; i++)
@@ -140,22 +140,22 @@ public class GuestManager : MonoBehaviour
         _exitedGuests.Clear();
     }
 
-    public void GuestExit(Guest guest)
+    public virtual void GuestExit(Guest guest)
     {
         _exitedGuests.Add(guest);
     }
 
-    public List<Guest> GuestList()
+    public virtual List<Guest> GuestList()
     {
         return _guest;
     }
 
-    public List<Destination> DestinationList()
+    public virtual List<Destination> DestinationList()
     {
         return _destinations;
     }
 
-    public Destination RandomEntrance()
+    public virtual Destination RandomEntrance()
     {
         int randomIndex = Random.Range(0, _guestEntrances.Length);
         return _guestEntrances[randomIndex];

@@ -53,7 +53,7 @@ public class Guest : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void GuestUpdate()
+    public virtual void GuestUpdate()
     {
         if (Status == Action.RANDOM)
         {
@@ -128,7 +128,7 @@ public class Guest : MonoBehaviour
         DestinationDistance(); //++++
     }
 
-    public void GuestWalkDestination()
+    public virtual void GuestWalkDestination()
     {
         Status = Action.WALKING;
         UpdateDestination();
@@ -210,6 +210,7 @@ public class Guest : MonoBehaviour
             return distance;
         }
 
+        //check to see if there is a path
         Vector3[] path = navMeshPath.corners;
         if (path.Length < 2 || Vector3.Distance(path[path.Length - 1], end) > 2)
         {
@@ -304,37 +305,37 @@ public class Guest : MonoBehaviour
         SetText("Bathing");
     }
 
-    public Destination GetUltimateDestination()
+    public virtual Destination GetUltimateDestination()
     {
         if (_destinations.Count == 0) return null;
         return _destinations[_destinations.Count - 1];
     }
 
-    public void SetText(string text)
+    public virtual void SetText(string text)
     {
         if (Text == null) return;
         Text.text = text;
     }
 
-    public void SetSlider(float i)
+    public virtual void SetSlider(float i)
     {
         if (Slider == null) return;
         Slider.value = i;
     }
 
-    public string GetText()
+    public virtual string GetText()
     {
         if (Slider == null) return string.Empty;
         return Text.text;
     }
 
-    public float GetSliderValue()
+    public virtual float GetSliderValue()
     {
         if (Slider == null) return Mathf.Infinity;
         return Slider.value;
     }
 
-    public List<Destination> VisitedBaths()
+    public virtual List<Destination> VisitedBaths()
     {
         return _visitedBaths;
     }
