@@ -144,11 +144,11 @@ public class Paternoster : Conveyance
         if (_guests.ContainsKey(guest)) return;
 
         Destination destination = guest.GetUltimateDestination();
-        destination = GetDestination(destination.transform.position);
+        destination = GetDestination(destination.transform.position, guest);
         _guests.Add(guest, destination.transform.position);
     }
 
-    public override Destination GetDestination(Vector3 vec)
+    public override Destination GetDestination(Vector3 vec, Guest guest)
     {
         Destination[] tempDestinations = _destinations;
         tempDestinations = tempDestinations.OrderBy(go => Mathf.Abs(go.transform.position.y - vec.y)).ToArray();
@@ -157,29 +157,29 @@ public class Paternoster : Conveyance
         return tempDestinations[0];
     }
 
-    public override Vector3 StartPosition(Vector3 vec)
+    public override Vector3 StartPosition(Vector3 vec, Guest guest)
     {
         if (_destinations.Length == 0) { return Vector3.zero; }
-        Destination destination = GetDestination(vec);
+        Destination destination = GetDestination(vec, guest);
         return destination.transform.position;
     }
 
-    public override Vector3 EndPosition(Vector3 vec)
+    public override Vector3 EndPosition(Vector3 vec, Guest guest)
     {
         if (_destinations.Length == 0) { return Vector3.zero; }
-        Destination destination = GetDestination(vec);
+        Destination destination = GetDestination(vec, guest);
         return destination.transform.position;
     }
 
-    public override float WeightedTravelDistance(Vector3 start, Vector3 end)
+    public override float WeightedTravelDistance(Vector3 start, Vector3 end, Guest guest)
     {
         float distance = 0;
         //guard statement
         if (_destinations.Length < 2) return distance;
 
         //get the total path distance
-        Destination go1 = GetDestination(start);
-        Destination go2 = GetDestination(end);
+        Destination go1 = GetDestination(start, guest);
+        Destination go2 = GetDestination(end, guest);
         distance = Vector3.Distance(go1.transform.position, go2.transform.position);
 
         //we scale the distance by the weight factor
