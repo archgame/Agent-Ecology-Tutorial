@@ -107,4 +107,9 @@ public class Conveyance : MonoBehaviour
     {
         return IsActive;
     }
+
+    public virtual int NumberOfGuests()
+    {
+        return _guests.Count;
+    }
 }

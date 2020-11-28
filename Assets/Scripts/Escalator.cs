@@ -35,4 +35,9 @@ public class Escalator : Conveyance
             }
         }
     }
+
+    public override int NumberOfGuests()
+    {
+        return _guests.Count;
+    }
 }

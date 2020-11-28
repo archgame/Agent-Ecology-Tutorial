@@ -165,7 +165,7 @@ public class Guest : MonoBehaviour
     /// <summary>
     /// Update the agents destination and make sure the agent isn't stopped
     /// </summary>
-    private void UpdateDestination()
+    public void UpdateDestination()
     {
         _agent.SetDestination(Destination.transform.position);
         _agent.isStopped = false;
