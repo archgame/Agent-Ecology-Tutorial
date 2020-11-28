@@ -87,6 +87,7 @@ public class GuestManager : MonoBehaviour
     private void AdmitEmployee()
     {
         if (EmployeePrefab == null) return;
+        if (_employeeEntrances.Length == 0) return;
         if (_guest.Count % 3 != 0) return;
         if (_guest.Count / 3 <= _employee.Count) return;
 
@@ -126,6 +127,8 @@ public class GuestManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        SetClickBath();
+
         //call guest update on each guest, the manager controls the guests
         foreach (Guest guest in _guest)
         {
@@ -199,5 +202,35 @@ public class GuestManager : MonoBehaviour
 
         randomIndex = Random.Range(0, _employeeEntrances.Length);
         return _employeeEntrances[randomIndex];
+    }
+
+    public void SetClickBath()
+    {
+        //guard statement if no moust button clicked
+        if (!Input.GetKeyDown(KeyCode.B)) return;
+        if (_guest.Count == 0) return;
+
+        Vector3 screenPoint = Input.mousePosition; //mouse position on the screen
+        Ray ray = Camera.main.ScreenPointToRay(screenPoint); //converting the mouse position to ray from mouse position
+        RaycastHit hit;
+        if (!Physics.Raycast(ray.origin, ray.direction, out hit)) return; //was something hit?
+        if (hit.transform.gameObject.tag != "Bath") return; //was a bath hit
+        if (!hit.transform.GetComponent<Destination>()) return; //does gameobject tagged bath have Destination script
+
+        //Debug.Log("Bath Hit");
+        Guest guest = _guest[_guest.Count - 1];
+        if (guest.Status == Guest.Action.RIDING) return; //make sure the guest is not on a conveyance
+        Destination bath = hit.transform.GetComponent<Destination>();
+
+        //if bath is full guard statement
+        if (bath.IsFull()) return; //continue goes to the next line
+
+        //assign destination;
+        bath.AddGuest(guest);
+        guest.NextDestination(bath);
+
+        if (guest.gameObject.GetComponent<TrailRenderer>()) return;
+        guest.gameObject.AddComponent<TrailRenderer>();
+        guest.gameObject.GetComponent<TrailRenderer>().time = 30;
     }
 }

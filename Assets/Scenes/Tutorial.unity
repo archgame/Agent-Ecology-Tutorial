@@ -7155,7 +7155,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &250385221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27840,7 +27840,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &972466972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42805,7 +42805,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1471052115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51918,7 +51918,7 @@ MonoBehaviour:
     type: 3}
   EmployeePrefab: {fileID: 3536259529731363460, guid: b783e6a362f3e594481e5ef42ffada60,
     type: 3}
-  EntranceRate: 2
+  EntranceRate: 3600
 --- !u!1001 &1822445938
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60900,7 +60900,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2083955816
 MonoBehaviour:
   m_ObjectHideFlags: 0

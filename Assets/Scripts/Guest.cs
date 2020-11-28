@@ -177,11 +177,19 @@ public class Guest : MonoBehaviour
         _agent.isStopped = false;
     }
 
-    public virtual void NextDestination()
+    public virtual void NextDestination(Destination destination = null)
     {
         _agent.enabled = true;
         _destinations.RemoveAt(0);
-        Destination = _destinations[0];
+        if (destination == null)
+        {
+            Destination = _destinations[0];
+        }
+        else
+        {
+            _destinations.Clear();
+            Destination = destination;
+        }
         Status = Action.WALKING;
         FindPath(ref _currentConveyance, ref _destinations); //this allows multiple conveyances
     }
