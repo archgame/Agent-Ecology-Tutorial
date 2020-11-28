@@ -7155,7 +7155,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &250385221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7169,6 +7169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OccupancyLimit: 1
+  EntranceOpen: 1
 --- !u!65 &250385223
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7237,7 +7238,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 250385220}
   m_LocalRotation: {x: -0, y: -0.2955503, z: -0, w: 0.9553272}
-  m_LocalPosition: {x: 4.3, y: 1, z: -25}
+  m_LocalPosition: {x: 20.1, y: 1, z: -14.2}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
@@ -27840,7 +27841,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &972466972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27854,6 +27855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OccupancyLimit: 1
+  EntranceOpen: 1
 --- !u!65 &972466974
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27922,7 +27924,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972466971}
   m_LocalRotation: {x: -0, y: -0.2955503, z: -0, w: 0.9553272}
-  m_LocalPosition: {x: 41.07, y: 1, z: 37.29}
+  m_LocalPosition: {x: 27, y: 1, z: 27.66}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
@@ -51902,6 +51904,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OccupancyLimit: 1
+  EntranceOpen: 1
 --- !u!114 &1820981039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51918,7 +51921,7 @@ MonoBehaviour:
     type: 3}
   EmployeePrefab: {fileID: 3536259529731363460, guid: b783e6a362f3e594481e5ef42ffada60,
     type: 3}
-  EntranceRate: 3600
+  EntranceRate: 2
 --- !u!1001 &1822445938
 PrefabInstance:
   m_ObjectHideFlags: 0
