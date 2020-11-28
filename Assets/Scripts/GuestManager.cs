@@ -13,9 +13,11 @@ public class GuestManager : MonoBehaviour
     public float EntranceRate = 0.5f; //the rate at which guests will enter
 
     private List<Guest> _guest = new List<Guest>(); //list of guests
+    private List<Guest> _employee = new List<Guest>(); //list of guests
     private List<Destination> _destinations = new List<Destination>(); //list of destinations
     private List<Guest> _exitedGuests = new List<Guest>(); //guests that will exit
     private GuestEntrance[] _guestEntrances;
+    private EmployeeEntrance[] _employeeEntrances;
 
     private float _lastEntrance = 0; //time since last entrant
     private int _occupancyLimit = 0; //occupancy limit maximum
@@ -47,6 +49,7 @@ public class GuestManager : MonoBehaviour
         }
 
         _guestEntrances = GameObject.FindObjectsOfType<GuestEntrance>();
+        _employeeEntrances = GameObject.FindObjectsOfType<EmployeeEntrance>();
 
         AdmitGuest();
     }
@@ -76,6 +79,22 @@ public class GuestManager : MonoBehaviour
         Vector3 position = _guestEntrances[randomIndex].transform.position;
         GameObject guest = Instantiate(GuestPrefab, position, Quaternion.identity); //adding our gameobject to scene
         _guest.Add(guest.GetComponent<Guest>()); //adding our gameobject guest script to the guest list
+        Guest guestScript = guest.GetComponent<Guest>();
+        //List<Destination> visitedBaths = guestScript.VisitedBaths();
+        AssignOpenBath(guestScript);
+    }
+
+    private void AdmitEmployee()
+    {
+        if (EmployeePrefab == null) return;
+        if (_guest.Count % 3 != 0) return;
+        if (_guest.Count / 3 <= _employee.Count) return;
+
+        //instantiate employee
+        int randomIndex = Random.Range(0, _employeeEntrances.Length);
+        Vector3 position = _employeeEntrances[randomIndex].transform.position;
+        GameObject guest = Instantiate(EmployeePrefab, position, Quaternion.identity); //adding our gameobject to scene
+        _employee.Add(guest.GetComponent<Guest>()); //adding our gameobject guest script to the guest list
         Guest guestScript = guest.GetComponent<Guest>();
         //List<Destination> visitedBaths = guestScript.VisitedBaths();
         AssignOpenBath(guestScript);
@@ -112,12 +131,17 @@ public class GuestManager : MonoBehaviour
         {
             guest.GuestUpdate();
         }
+        foreach (Guest guest in _employee)
+        {
+            guest.GuestUpdate();
+        }
 
         if (_exitedGuests.Count >= 0) { ExitGuests(); }
 
         //admit guests after entrance rate
         if (EntranceRate <= _lastEntrance)
         {
+            AdmitEmployee();
             AdmitGuest();
             _lastEntrance = 0;
             return;
@@ -134,7 +158,15 @@ public class GuestManager : MonoBehaviour
         for (int i = 0; i < _exitedGuests.Count; i++)
         {
             Guest guest = _exitedGuests[i];
-            _guest.Remove(guest);
+            if (_guest.Contains(guest))
+            {
+                _guest.Remove(guest);
+            }
+            if (_employee.Contains(guest))
+            {
+                _employee.Remove(guest);
+            }
+
             Destroy(guest.gameObject);
         }
         _exitedGuests.Clear();
@@ -155,9 +187,17 @@ public class GuestManager : MonoBehaviour
         return _destinations;
     }
 
-    public virtual Destination RandomEntrance()
+    public virtual Destination RandomEntrance(Guest guest)
     {
-        int randomIndex = Random.Range(0, _guestEntrances.Length);
-        return _guestEntrances[randomIndex];
+        string name = guest.name.Replace("(Clone)", "");
+        int randomIndex = 0;
+        if (name == GuestPrefab.name)
+        {
+            randomIndex = Random.Range(0, _guestEntrances.Length);
+            return _guestEntrances[randomIndex];
+        }
+
+        randomIndex = Random.Range(0, _employeeEntrances.Length);
+        return _employeeEntrances[randomIndex];
     }
 }

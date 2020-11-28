@@ -94,7 +94,7 @@ public class Guest : MonoBehaviour
 
                 if (Baths == 0) //if guest is done with baths
                 {
-                    Destination = GuestManager.Instance.RandomEntrance();
+                    Destination = GuestManager.Instance.RandomEntrance(this);
                 }
                 else //if guest needs new bath assigned
                 {
