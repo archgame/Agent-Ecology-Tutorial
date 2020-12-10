@@ -267,9 +267,9 @@ public class Guest : MonoBehaviour
             float distC = c.WeightedTravelDistance(guestPosition, destinationPosition, this);
             float distFromC = AgentWalkDistance(_agent, transform, c.EndPosition(destinationPosition, this), destinationPosition, Color.red);
 
-            //Debug.DrawLine(guestPosition, c.StartPosition(), Color.black);
+            //Debug.DrawLine(guestPosition, c.StartPosition(guestPosition, this), Color.black);
             Debug.DrawLine(c.StartPosition(guestPosition, this), c.EndPosition(destinationPosition, this), Color.cyan);
-            //Debug.DrawLine(c.EndPosition(), destinationPosition, Color.white);
+            //Debug.DrawLine(c.EndPosition(destinationPosition, this), destinationPosition, Color.white);
 
             if (distance > distToC + distC + distFromC)
             {
